@@ -42,19 +42,9 @@ pipeline {
         stage('Wait for Grid Readiness') {
             steps {
                 sh '''
-                    for attempt in $(seq 1 30); do
-                        if curl --fail --silent "http://localhost:4444/status" | grep -q '"ready"[[:space:]]*:[[:space:]]*true'; then
-                            echo "Selenium Grid is ready."
-                            exit 0
-                        fi
-
-                        echo "Waiting for Selenium Grid: ${attempt}/30"
-                        sleep 2
-                    done
-
-                    echo "Selenium Grid did not become ready."
-                    docker compose logs selenium-hub chrome firefox edge || true
-                    exit 1
+                    echo "Waiting for Selenium Grid to start..."
+                    sleep 15
+                    docker compose ps
                 '''
             }
         }
