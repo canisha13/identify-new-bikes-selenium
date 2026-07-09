@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selenium Grid Live Dashboard</title>
+    <style>
+        body {
+            margin: 0;
+            background-color: #0f111a;
+            color: #ffffff;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            overflow: hidden;
+        }
+        .header {
+            padding: 12px 20px;
+            background: rgba(25, 28, 40, 0.9);
+            border-bottom: 1px solid #2d3142;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        .header h2 {
+            margin: 0;
+            font-size: 1.2rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        .status {
+            font-size: 0.9rem;
+            color: #4ade80;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .pulse {
+            width: 8px;
+            height: 8px;
+            background-color: #4ade80;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #4ade80;
+            animation: pulse-animation 2s infinite;
+        }
+        @keyframes pulse-animation {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(74, 222, 128, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); }
+        }
+        .grid {
+            display: flex;
+            height: calc(100vh - 53px);
+            width: 100vw;
+        }
+        .node {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #2d3142;
+            background: #151822;
+        }
+        .node:last-child {
+            border-right: none;
+        }
+        .node-title {
+            padding: 8px 15px;
+            background: #1e2230;
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            border-bottom: 1px solid #2d3142;
+        }
+        .node-title a {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            text-decoration: none;
+            font-weight: 400;
+        }
+        .node-title a:hover {
+            color: #ffffff;
+        }
+        .chrome { color: #60a5fa; }
+        .firefox { color: #fb923c; }
+        .edge { color: #38bdf8; }
+
+        iframe {
+            flex: 1;
+            border: none;
+            width: 100%;
+            background-color: #000;
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <h2>Selenium Grid Live Dashboard</h2>
+    <div class="status"><div class="pulse"></div> Live Monitoring Active</div>
+</div>
+<div class="grid">
+    <div class="node">
+        <div class="node-title chrome">
+            <span>Chrome Node (Port 7900)</span>
+            <a href="http://localhost:7900" target="_blank">Open direct ↗</a>
+        </div>
+        <iframe src="http://localhost:7900/?autoconnect=true&resize=scale&reconnect=true"></iframe>
+    </div>
+    <div class="node">
+        <div class="node-title firefox">
+            <span>Firefox Node (Port 7901)</span>
+            <a href="http://localhost:7901" target="_blank">Open direct ↗</a>
+        </div>
+        <iframe src="http://localhost:7901/?autoconnect=true&resize=scale&reconnect=true"></iframe>
+    </div>
+    <div class="node">
+        <div class="node-title edge">
+            <span>Edge Node (Port 7902)</span>
+            <a href="http://localhost:7902" target="_blank">Open direct ↗</a>
+        </div>
+        <iframe src="http://localhost:7902/?autoconnect=true&resize=scale&reconnect=true"></iframe>
+    </div>
+</div>
+</body>
+</html>

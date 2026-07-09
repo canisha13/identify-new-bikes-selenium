@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="ZigWheels Automation Suite" parallel="tests" thread-count="4">
+    <listeners>
+        <listener class-name="com.capita.listeners.TestListener"/>
+    </listeners>
+    <test name="Full Regression">
+        <classes>
+            <class name="com.capita.tests.UpcomingHondaBikesTest"/>
+            <class name="com.capita.tests.UsedCarsTest"/>
+            <class name="com.capita.tests.GoogleLoginTest"/>
+            <class name="com.capita.tests.AccessibilityTest"/>
+        </classes>
+    </test>
+
+    <test name="SearchBikeTest-Chrome">
+        <parameter name="browser" value="chrome"/>
+        <classes>
+            <class name="com.capita.tests.SearchBikeTest"/>
+        </classes>
+    </test>
+
+    <test name="SearchBikeTest-Firefox">
+        <parameter name="browser" value="firefox"/>
+        <classes>
+            <class name="com.capita.tests.SearchBikeTest"/>
+        </classes>
+    </test>
+
+    <test name="SearchBikeTest-Edge">
+        <parameter name="browser" value="edge"/>
+        <classes>
+            <class name="com.capita.tests.SearchBikeTest"/>
+        </classes>
+    </test>
+</suite>
