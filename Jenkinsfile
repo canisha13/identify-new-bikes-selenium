@@ -27,19 +27,28 @@ pipeline {
             }
         }
 
+        stage('Clean Old Reports') {
+            steps {
+                sh '''
+                    rm -rf target
+                    mkdir -p target/extent target/allure-results target/surefire-reports target/screenshots
+                '''
+            }
+        }
+
         stage('Build Test Image') {
             steps {
                 sh 'docker compose build tests'
             }
         }
 
-        stage('Start Grid') {
+        stage('Start Selenium Grid') {
             steps {
                 sh 'docker compose up -d selenium-hub chrome firefox edge'
             }
         }
 
-        stage('Wait for Grid Readiness') {
+        stage('Wait for Grid') {
             steps {
                 sh '''
                     echo "Waiting for Selenium Grid to start..."
@@ -65,6 +74,7 @@ pipeline {
 
     post {
         always {
+
             sh '''
                 docker compose logs tests > docker-tests.log 2>&1 || true
                 docker compose logs selenium-hub chrome firefox edge > docker-grid.log 2>&1 || true
@@ -74,14 +84,32 @@ pipeline {
                 testResults: 'target/surefire-reports/TEST-*.xml,target/surefire-reports/*.xml'
 
             archiveArtifacts allowEmptyArchive: true,
-                artifacts: 'target/extent/**, target/allure-results/**, target/surefire-reports/**, target/screenshots/**, docker-tests.log, docker-grid.log'
+                artifacts: '''
+                    target/extent/**,
+                    target/allure-results/**,
+                    target/surefire-reports/**,
+                    target/screenshots/**,
+                    docker-tests.log,
+                    docker-grid.log
+                '''
+
+            publishHTML([
+                allowMissing: true,
+                alwaysLinkToLastBuild: true,
+                keepAll: true,
+                reportDir: 'target/extent',
+                reportFiles: '*.html',
+                reportName: 'Extent HTML Report'
+            ])
 
             script {
                 if (fileExists('target/allure-results')) {
                     try {
-                        allure includeProperties: false, jdk: '', results: [[path: 'target/allure-results']]
+                        allure includeProperties: false,
+                               jdk: '',
+                               results: [[path: 'target/allure-results']]
                     } catch (e) {
-                        echo "Allure plugin not installed or not configured - skipping Allure report rendering."
+                        echo "Allure plugin not installed or not configured."
                     }
                 }
             }
