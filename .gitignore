@@ -36,4 +36,5 @@ build/
 .vscode/
 
 ### Mac OS ###
-.DS_Store.allure/
+.DS_Store
+.allure/
