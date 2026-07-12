@@ -80,6 +80,19 @@ pipeline {
                 docker compose logs selenium-hub chrome firefox edge > docker-grid.log 2>&1 || true
             '''
 
+            // The volume mount can resolve to a different path than Jenkins'
+            // own workspace when Jenkins itself runs inside Docker (talking to
+            // the host Docker engine via the mounted socket). docker cp works
+            // directly against the container by ID, bypassing that path
+            // confusion entirely, so this guarantees the reports actually land
+            // in Jenkins' workspace before we try to publish/archive them.
+            sh '''
+                CONTAINER_ID=$(docker compose ps -q tests)
+                if [ -n "$CONTAINER_ID" ]; then
+                    docker cp "$CONTAINER_ID":/app/target/. target/ || true
+                fi
+            '''
+
             junit allowEmptyResults: true,
                 testResults: 'target/surefire-reports/TEST-*.xml,target/surefire-reports/*.xml'
 
