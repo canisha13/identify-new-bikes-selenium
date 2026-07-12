@@ -80,14 +80,12 @@ pipeline {
                 docker compose logs selenium-hub chrome firefox edge > docker-grid.log 2>&1 || true
             '''
 
-            // The volume mount can resolve to a different path than Jenkins'
-            // own workspace when Jenkins itself runs inside Docker (talking to
-            // the host Docker engine via the mounted socket). docker cp works
-            // directly against the container by ID, bypassing that path
-            // confusion entirely, so this guarantees the reports actually land
-            // in Jenkins' workspace before we try to publish/archive them.
+            // docker compose ps -q only lists RUNNING containers by default.
+            // Since --exit-code-from tests causes the tests container to stop
+            // right after finishing, we need -a to include stopped containers
+            // too, or CONTAINER_ID comes back empty and docker cp never runs.
             sh '''
-                CONTAINER_ID=$(docker compose ps -q tests)
+                CONTAINER_ID=$(docker compose ps -a -q tests)
                 if [ -n "$CONTAINER_ID" ]; then
                     docker cp "$CONTAINER_ID":/app/target/. target/ || true
                 fi
