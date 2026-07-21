@@ -30,11 +30,8 @@ pipeline {
         stage('Clean Old Reports') {
             steps {
                 sh '''
-                    rm -rf target
-                    rm -rf allure-report
+                    docker run --rm -v "$PWD":/workspace alpine sh -c "rm -rf /workspace/target /workspace/allure-report"
                     mkdir -p target/extent target/allure-results target/surefire-reports target/screenshots
-                    echo "Confirming allure-results is empty:"
-                    ls -la target/allure-results
                 '''
             }
         }
@@ -83,10 +80,6 @@ pipeline {
                 docker compose logs selenium-hub chrome firefox edge > docker-grid.log 2>&1 || true
             '''
 
-            // docker compose ps -q only lists RUNNING containers by default.
-            // Since --exit-code-from tests causes the tests container to stop
-            // right after finishing, we need -a to include stopped containers
-            // too, or CONTAINER_ID comes back empty and docker cp never runs.
             sh '''
                 CONTAINER_ID=$(docker compose ps -a -q tests)
                 if [ -n "$CONTAINER_ID" ]; then
