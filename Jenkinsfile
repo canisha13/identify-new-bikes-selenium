@@ -31,7 +31,10 @@ pipeline {
             steps {
                 sh '''
                     rm -rf target
+                    rm -rf allure-report
                     mkdir -p target/extent target/allure-results target/surefire-reports target/screenshots
+                    echo "Confirming allure-results is empty:"
+                    ls -la target/allure-results
                 '''
             }
         }
