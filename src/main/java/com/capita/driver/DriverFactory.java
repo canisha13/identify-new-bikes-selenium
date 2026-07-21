@@ -11,9 +11,8 @@ import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.remote.http.ClientConfig;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
@@ -106,12 +105,16 @@ public class DriverFactory {
     }
 
     private static WebDriver createRemoteDriver(Capabilities options) {
-        try {
-            String gridUrl = ConfigReader.getProperty("gridUrl");
-            return new RemoteWebDriver(new URL(gridUrl), options);
-        } catch (MalformedURLException e) {
-            throw new RuntimeException("Invalid Grid URL in config.properties", e);
-        }
+        String gridUrl = ConfigReader.getProperty("gridUrl");
+
+        ClientConfig clientConfig = ClientConfig.defaultConfig()
+                .readTimeout(Duration.ofSeconds(90));
+
+        return RemoteWebDriver.builder()
+                .oneOf(options)
+                .address(gridUrl)
+                .config(clientConfig)
+                .build();
     }
 
     /**
