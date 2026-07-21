@@ -38,7 +38,7 @@ pipeline {
 
         stage('Build Test Image') {
             steps {
-                sh 'docker compose build tests'
+                sh 'docker compose build --no-cache tests'
             }
         }
 
